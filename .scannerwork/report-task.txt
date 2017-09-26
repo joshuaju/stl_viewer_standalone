@@ -1,0 +1,6 @@
+projectKey=com.octoprint.printerapp
+serverUrl=http://localhost:9000
+serverVersion=6.5.0.27846
+dashboardUrl=http://localhost:9000/dashboard/index/com.octoprint.printerapp
+ceTaskId=AV53YqEbi6OlMzxl7KAW
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AV53YqEbi6OlMzxl7KAW
