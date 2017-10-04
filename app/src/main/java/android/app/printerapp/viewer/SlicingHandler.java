@@ -3,12 +3,7 @@ package android.app.printerapp.viewer;
 import android.app.Activity;
 import android.app.printerapp.Log;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
-import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.octoprint.OctoprintFiles;
-import android.app.printerapp.octoprint.OctoprintSlicing;
-import android.app.printerapp.octoprint.StateUtils;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.widget.Toast;
@@ -51,7 +46,6 @@ public class SlicingHandler {
     private String mOriginalProject = null;
 
     //Default URL to slice models
-    private ModelPrinter mPrinter;
 
     public SlicingHandler(Activity activity){
 
@@ -93,13 +87,6 @@ public class SlicingHandler {
         }
 
         ViewerMainFragment.slicingCallback();
-    }
-
-    //Set the printer dynamically to send the files
-    public void setPrinter(ModelPrinter p){
-
-        mPrinter = p;
-
     }
 
 
@@ -149,11 +136,6 @@ public class SlicingHandler {
             if (tempFile.exists()){
 
                 mLastReference = tempFile.getAbsolutePath();
-
-                DatabaseController.handlePreference(DatabaseController.TAG_RESTORE,"Last",mLastReference, true);
-
-                DatabaseController.handlePreference(DatabaseController.TAG_SLICING, "Last", tempFile.getName(), true);
-
 
                 StlFile.saveModel(mDataList,null,SlicingHandler.this);
 
@@ -229,35 +211,6 @@ public class SlicingHandler {
                 @Override
                 public void run() {
                     Log.i("Slicer", "Timer ended, Starting task");
-
-                    if (mPrinter!=null){
-
-                        if (mPrinter.getStatus()== StateUtils.STATE_OPERATIONAL){
-
-                            OctoprintFiles.deleteFile(mActivity, mPrinter.getAddress(), DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last"), "/local/");
-
-                            Handler saveHandler = new Handler();
-                            saveHandler.post(mSaveRunnable);
-
-//                            new SaveTask().execute();
-
-                        } else {
-
-                            Log.i("Slicer", "No printer available");
-
-                            Toast.makeText(mActivity, R.string.viewer_printer_selected,Toast.LENGTH_LONG).show();
-
-                        }
-
-
-                    } else {
-
-                        if (DatabaseController.count() > 1){
-
-                        }
-                        Toast.makeText(mActivity,R.string.viewer_printer_unavailable,Toast.LENGTH_LONG).show();
-
-                    }
                 }
             });
 
@@ -275,12 +228,9 @@ public class SlicingHandler {
             File mFile = createTempFile();
 
             Log.i("Slicer", "Sending slice command");
-            OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),mFile,mExtras);
             //if (mExtras.has("print")) mExtras.remove("print");
 
             Log.i("Slicer", "Showing progress bar");
-            ViewerMainFragment.showProgressBar(StateUtils.SLICER_UPLOAD, 0);
-
 
         }
     };
@@ -305,11 +255,9 @@ public class SlicingHandler {
         protected void onPostExecute(Object o) {
 
             Log.i("Slicer", "Sending slice command");
-            OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),mFile,mExtras);
             //if (mExtras.has("print")) mExtras.remove("print");
 
             Log.i("Slicer", "Showing progress bar");
-            ViewerMainFragment.showProgressBar(StateUtils.SLICER_UPLOAD, 0);
 
         }
     }

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.printerapp.Log;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryModelCreation;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -274,7 +273,6 @@ public class GcodeFile  {
 	    		ViewerMainFragment.draw();
 				mProgressDialog.dismiss();  
     		} else if(mMode== ViewerMainFragment.PRINT_PREVIEW) {
-    			PrintViewFragment.drawPrintView();
     			mProgressDialog.dismiss();
     		} else if (mMode== ViewerMainFragment.DO_SNAPSHOT) {
 				LibraryModelCreation.takeSnapshot();

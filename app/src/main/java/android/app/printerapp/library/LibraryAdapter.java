@@ -2,9 +2,7 @@ package android.app.printerapp.library;
 
 import android.annotation.SuppressLint;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelFile;
-import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -127,9 +125,6 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
             if (m.getParent().equals("printer")) {
                 iv.setImageResource(R.drawable.ic_folder_grey600_36dp);
                 iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-
-                ModelPrinter p = DevicesListController.getPrinter(Long.parseLong(m.getName()));
-                nameTextView.setText(p.getDisplayName());
 
 
             } else {

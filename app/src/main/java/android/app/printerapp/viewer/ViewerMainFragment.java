@@ -7,11 +7,8 @@ import android.app.Fragment;
 import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelProfile;
-import android.app.printerapp.octoprint.OctoprintConnection;
-import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.util.ui.CustomEditableSlider;
 import android.app.printerapp.util.ui.CustomPopupWindow;
 import android.app.printerapp.util.ui.ListIconPopupWindowAdapter;
@@ -722,13 +719,7 @@ public class ViewerMainFragment extends Fragment {
             if (tempFile.exists()) {
 
                 //It's the last file
-                if (DatabaseController.getPreference("Slicing", "Last") == null) {
-
-                    //Open desired file
-                    openFile(tempFile.getAbsolutePath());
-                    mCurrentViewMode = state;
-
-                } else {
+                {
                     Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
                 }
 
@@ -1402,88 +1393,9 @@ public class ViewerMainFragment extends Fragment {
                 pb.setVisibility(View.VISIBLE);
 
                 switch (status) {
-
-                    case StateUtils.SLICER_HIDE:
-
-                        if (i < 0) {
-
-                            tv.setText(R.string.error);
-
-                        } else {
-                            tv.setText(R.string.viewer_text_downloaded);
-                        }
-
-                        pb.setVisibility(View.INVISIBLE);
-
-                        break;
-
-                    case StateUtils.SLICER_UPLOAD:
-
-                        String uploadText = mContext.getString(R.string.viewer_text_uploading);
-
-
-                        if (i == 0) pb.setIndeterminate(true);
-                        else {
-
-                            pb.setProgress(i);
-                            pb.setIndeterminate(false);
-
-                            uploadText += " (" + i + "%)";
-
-                        }
-
-                        tv.setText(uploadText);
-                        tve.setText(null);
-
-                        break;
-
-                    case StateUtils.SLICER_SLICE:
-
-                        String slicingText = mContext.getString(R.string.viewer_text_slicing);
-
-
-                        if (i == 0) {
-                            pb.setIndeterminate(true);
-
-                        } else if (i == 100) {
-
-                            pb.setIndeterminate(false);
-                            pb.setProgress(100);
-
-                            slicingText += "  " + mContext.getString(R.string.viewer_text_done);
-
-                        } else {
-
-                            pb.setProgress(i);
-                            pb.setIndeterminate(false);
-
-                            slicingText += "  (" + i + "%)";
-
-                        }
-
-                        tv.setText(slicingText);
-                        tve.setText(null);
-
-                        mRootView.invalidate();
-
-                        break;
-
-                    case StateUtils.SLICER_DOWNLOAD:
-
-
-                        if (i > 0) {
-                            tve.setText(OctoprintConnection.ConvertSecondToHHMMString(String.valueOf(i)));
-                        }
-                        tv.setText(R.string.viewer_text_downloading);
-                        pb.setIndeterminate(true);
-
-                        break;
-
                     default:
 
                         break;
-
-
                 }
 
             }else {
@@ -1564,18 +1476,6 @@ public class ViewerMainFragment extends Fragment {
     public BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
 
-            if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last") != null)
-                if ((DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last")).equals("temp.gco")) {
-
-                    DatabaseController.handlePreference(DatabaseController.TAG_SLICING, "Last", null, false);
-
-
-                    showProgressBar(StateUtils.SLICER_HIDE, 0);
-                } else {
-
-                }
-
-
         }
     };
 
@@ -1602,8 +1502,6 @@ public class ViewerMainFragment extends Fragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-
-        mSidePanelHandler.refreshPrinters();
     }
 
 
@@ -1613,11 +1511,8 @@ public class ViewerMainFragment extends Fragment {
         if (sharedPref.getBoolean(mContext.getResources().getString(R.string.shared_preferences_autoslice), true)) {
 
             SliceTask task = new SliceTask();
-            mSidePanelHandler.refreshPrinters();
             task.execute();
         } else {
-
-            mSidePanelHandler.refreshPrinters();
             mSidePanelHandler.switchSlicingButton(true);
         }
 
@@ -1627,7 +1522,6 @@ public class ViewerMainFragment extends Fragment {
     public static void slicingCallbackForced(){
 
 //        SliceTask task = new SliceTask();
-        mSidePanelHandler.refreshPrinters();
 //        task.execute();
 
         Handler slicingHandler = new Handler();
@@ -1770,37 +1664,11 @@ public class ViewerMainFragment extends Fragment {
     private void restoreLastPanel() {
 
         if (mSlicingHandler.getLastReference() == null) //Only if there is no last reference
-            if (DatabaseController.getPreference(DatabaseController.TAG_RESTORE, "Last") != null) {
 
-                final String file = DatabaseController.getPreference(DatabaseController.TAG_RESTORE, "Last");
-
-                AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
-                adb.setTitle(R.string.viewer_restore_session);
-
-                adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        openFileDialog(file);
-                        mSlicingHandler.setLastReference(file);
-
-                    }
-                });
-
-                adb.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        DatabaseController.handlePreference(DatabaseController.TAG_RESTORE, "Last", null, false);
-                    }
-                });
-
-                adb.show();
-
-            } else {
 
                 Toast.makeText(mContext, "No last session", Toast.LENGTH_SHORT).show();
 
-            }
+
 
     }
 

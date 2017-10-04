@@ -3,7 +3,6 @@ package android.app.printerapp.library.detail;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelFile;
 import android.content.Intent;
@@ -53,36 +52,13 @@ public class DetailViewFragment extends Fragment {
 
             //Share button
             ImageButton shareButton = (ImageButton) rootView.findViewById(R.id.detail_share_button);
-            shareButton.setColorFilter(getResources().getColor(R.color.body_text_2), PorterDuff.Mode.MULTIPLY);
-            shareButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    //Sharing intent
-                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    sharingIntent.setType("text/plain");
-                    String shareBody = getString(R.string.share_content_text);
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_subject_text));
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                    sharingIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(mFile.getStl())));
-                    startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_via_text)));
-
-
-                }
-            });
 
             //Favorite button
             final ImageButton favButton = (ImageButton) rootView.findViewById(R.id.detail_fav_button);
-            if (DatabaseController.isPreference(DatabaseController.TAG_FAVORITES, mFile.getName()))
-                favButton.setImageResource(R.drawable.ic_action_star);
-            else favButton.setImageResource(R.drawable.ic_action_star_outline);
+
+            favButton.setImageResource(R.drawable.ic_action_star_outline);
             favButton.setColorFilter(getResources().getColor(R.color.body_text_2), PorterDuff.Mode.MULTIPLY);
-            favButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    addToFavorite(favButton);
-                }
-            });
+
 
             //Close button
             ImageButton closeButton = (ImageButton) rootView.findViewById(R.id.detail_close_button);
@@ -151,19 +127,9 @@ public class DetailViewFragment extends Fragment {
 //
 //    }
 
-    private void addToFavorite(final ImageButton button) {
-        if (DatabaseController.isPreference(DatabaseController.TAG_FAVORITES, mFile.getName())) {
-            DatabaseController.handlePreference(DatabaseController.TAG_FAVORITES, mFile.getName(), null, false);
-            button.setImageResource(R.drawable.ic_action_star_outline);
-        } else {
-            DatabaseController.handlePreference(DatabaseController.TAG_FAVORITES, mFile.getName(), mFile.getAbsolutePath(), true);
-            button.setImageResource(R.drawable.ic_action_star);
-        }
-    }
-
     public void removeRightPanel() {
         FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+//        fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
         fragmentTransaction.remove(this).commit();
     }
 
@@ -174,16 +140,7 @@ public class DetailViewFragment extends Fragment {
         switch (item.getItemId()) {
 
             case R.id.menu_favorite: //Add a new printer
-
-                if (DatabaseController.isPreference(DatabaseController.TAG_FAVORITES, mFile.getName())) {
-                    DatabaseController.handlePreference(DatabaseController.TAG_FAVORITES, mFile.getName(), null, false);
-                    item.setIcon(getResources().getDrawable(R.drawable.ic_action_star_outline));
-                } else {
-                    DatabaseController.handlePreference(DatabaseController.TAG_FAVORITES, mFile.getName(), mFile.getAbsolutePath(), true);
-                    item.setIcon(getResources().getDrawable(R.drawable.ic_action_star));
-                }
-
-                return true;
+                throw new IllegalAccessError("This functionailty is no longer available");
             case android.R.id.home:
                 getActivity().onBackPressed();
                 return true;

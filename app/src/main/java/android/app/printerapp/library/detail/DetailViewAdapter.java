@@ -2,7 +2,6 @@ package android.app.printerapp.library.detail;
 
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.library.LibraryController;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -74,7 +73,8 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
             public void onClick(View v) {
             if ((LibraryController.hasExtension(0, f.getName())))
                 MainActivity.requestOpenFile(f.getAbsolutePath());
-            else DevicesListController.selectPrinter(v.getContext(), f, null);
+            else
+                throw new IllegalAccessError("This functionailty is no longer available");
 
             }
         });

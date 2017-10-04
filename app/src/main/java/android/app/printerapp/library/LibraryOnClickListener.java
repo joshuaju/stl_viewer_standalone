@@ -6,11 +6,8 @@ import android.app.printerapp.ListContent;
 import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.library.detail.DetailViewFragment;
 import android.app.printerapp.model.ModelFile;
-import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.octoprint.OctoprintFiles;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -129,7 +126,6 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                 //it's a printer file
                 if (f.getParent().contains("printer")) {
 
-                    LibraryController.retrievePrinterFiles(Long.parseLong(f.getName()));
                     mContext.notifyAdapter();
 
 
@@ -148,34 +144,20 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                                         super.onPositive(dialog);
 
 
-                                        ModelPrinter p = DevicesListController.getPrinter(Long.parseLong(LibraryController.getCurrentPath().getName()));
 
-                                        //it's a printer folder because there's a printer with the same name
-                                        if (p != null) {
-                                            Log.i("File","Clicking " + f.getAbsolutePath());
-                                            //either sd or internal (must check for folders inside sd
-                                            if (f.getAbsolutePath().substring(0,3).equals("/sd")) {
+                                //it's a printer folder because there's a printer with the same name
+                                {
 
-                                                String finalName = f.getAbsolutePath().substring(4,f.getAbsolutePath().length());
-                                                Log.i("File","Loading " + finalName);
+                                    //it's a raw file
+                                    if (f.getAbsoluteFile().length() > 0) {
+                                        //TODO select printer for raw files?
+                                        //DevicesListController.selectPrinter(mContext.getActivity(), f , 0);
+                                        MainActivity.requestOpenFile(f.getAbsolutePath());
 
-                                                OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), finalName, "/sdcard/", false, true);
-                                                //OctoprintSlicing.sliceCommand(mContext.getActivity(), p.getAddress(), f, "/local/");
-                                            } else
-                                                OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/local/", false, true);
-                                            Toast.makeText(mContext.getActivity(), "Loading " + f.getName() + " in " + p.getDisplayName(), Toast.LENGTH_LONG).show();
-                                        } else {
-
-                                            //it's a raw file
-                                            if (f.getAbsoluteFile().length() > 0) {
-                                                //TODO select printer for raw files?
-                                                //DevicesListController.selectPrinter(mContext.getActivity(), f , 0);
-                                                MainActivity.requestOpenFile(f.getAbsolutePath());
-
-                                            } else {
-                                                Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
+                                    } else {
+                                        Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
+                                    }
+                                }
 
 
                                     }
@@ -200,7 +182,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
     private void showRightPanel(final int index) {
 
         FragmentTransaction fragmentTransaction = mContext.getFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+        //fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
 
         //New DetailView with the file as an index
         DetailViewFragment detail = new DetailViewFragment();

@@ -2,8 +2,6 @@ package android.app.printerapp;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.printerapp.devices.DevicesListController;
-import android.app.printerapp.model.ModelPrinter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -50,7 +48,6 @@ public class NotificationReceiver extends BroadcastReceiver {
             int progress = intent.getIntExtra("progress", 0);
 
             //Target printer
-            ModelPrinter p = DevicesListController.getPrinter(id);
 
 
             // Sets an ID for the notification
@@ -64,25 +61,9 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                 String type = intent.getStringExtra("type");
 
-                if (type.equals("finish")) text = context.getString(R.string.finish_dialog_title) + " " + p.getJob().getFilename();
                 if (type.equals("print")) text = context.getString(R.string.notification_printing_progress);
                 if (type.equals("slice")) text = context.getString(R.string.notification_slicing_progress);
 
-
-                //Creates notification
-                NotificationCompat.Builder mBuilder =
-                        new NotificationCompat.Builder(context)
-                                .setSmallIcon(R.drawable.notification_logo)
-                                .setContentTitle(p.getDisplayName())
-                                .setContentText(text + " (" + progress + "%)")
-                                .setAutoCancel(true);
-
-                mBuilder.setContentIntent(resultPendingIntent);
-
-
-
-                // Builds the notification and issues it.
-                mNotifyMgr.notify(mNotificationId, mBuilder.build());
 
             } catch (NullPointerException e){
 

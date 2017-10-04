@@ -2,11 +2,7 @@ package android.app.printerapp.library;
 
 import android.annotation.SuppressLint;
 import android.app.printerapp.ListContent;
-import android.app.printerapp.devices.DevicesListController;
-import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelFile;
-import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.octoprint.StateUtils;
 import android.database.Cursor;
 import android.os.Environment;
 
@@ -111,40 +107,7 @@ public class LibraryController {
 		//Set new current path
 		mCurrentPath = path;
 	}
-	
-	//Retrieve only files from the individual printers
-	public static void retrievePrinterFiles(Long id){
-		
-		mFileList.clear();
-		
-		if (id!=null){
-		
-			ModelPrinter p = DevicesListController.getPrinter(id);
 
-			for (File f : p.getFiles()){
-				
-				addToList(f);
-					
-			}
-		}
-		
-		//Set the current path pointing to a printer so we can go back
-		mCurrentPath = new File("printer/" + id);
-	}
-	
-	//Retrieve favorites
-	public static void retrieveFavorites(){
-
-		
-		for (Map.Entry<String, ?> entry : DatabaseController.getPreferences(DatabaseController.TAG_FAVORITES).entrySet()){
-			
-			ModelFile m = new ModelFile(entry.getValue().toString(), "favorite");
-			mFileList.add(m);
-			
-		}
-		
-	}
-	
 	//Retrieve main folder or create if doesn't exist
 	//TODO: Changed main folder to FILES folder.
 	public static File getParentFolder(){
@@ -213,17 +176,12 @@ public class LibraryController {
 			//Retrieve only the printers like folders
 			if ((path.equals(TAB_PRINTER))){
 				
-				for (ModelPrinter p : DevicesListController.getList()){
 
-                    if ((p.getStatus()!= StateUtils.STATE_ADHOC)&&(p.getStatus()!=StateUtils.STATE_NEW))
-                        //we add a printer/ parent to determine inside a printer
-                        addToList(new File("printer/" + p.getId()));
-				}
 								
 			} else {
 
                 if ((path.equals(TAB_FAVORITES))){
-                    retrieveFavorites();
+
                 } else{
 
                     if ((path.equals(TAB_CURRENT))){
@@ -307,10 +265,6 @@ public class LibraryController {
 
         if (file.isDirectory()){
 
-            if (DatabaseController.isPreference(DatabaseController.TAG_FAVORITES, file.getName())) {
-                DatabaseController.handlePreference(DatabaseController.TAG_FAVORITES, file.getName(), null, false);
-            }
-
             for (File f : file.listFiles()){
 
                 deleteFiles(f);
@@ -391,19 +345,6 @@ public class LibraryController {
 
         mHistoryList.clear();
 
-        Cursor ch = DatabaseController.retrieveHistory();
-        ch.moveToFirst();
-
-
-        while (!ch.isAfterLast()) {
-
-            ListContent.DrawerListItem item = new ListContent.DrawerListItem(ch.getString(3), ch.getString(0), ch.getString(2), ch.getString(4), ch.getString(1));
-
-            addToHistory(item);
-            ch.moveToNext();
-        }
-
-        DatabaseController.closeDb();
     }
 
     public static void addToHistory(ListContent.DrawerListItem item){

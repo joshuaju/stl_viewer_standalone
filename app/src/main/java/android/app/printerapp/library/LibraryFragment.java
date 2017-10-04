@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
-import android.app.printerapp.octoprint.HttpUtils;
 import android.app.printerapp.viewer.FileBrowser;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -555,9 +554,7 @@ public class LibraryFragment extends Fragment {
         thingiverseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HttpUtils.URL_THINGIVERSE));
-                startActivity(browserIntent);
-                getModelsDialog.dismiss();
+                throw new IllegalAccessError("This functionailty is no longer available");
             }
         });
 
@@ -565,9 +562,7 @@ public class LibraryFragment extends Fragment {
         youmagineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HttpUtils.URL_YOUMAGINE));
-                startActivity(browserIntent);
-                getModelsDialog.dismiss();
+                throw new IllegalAccessError("This functionailty is no longer available");
             }
         });
     }

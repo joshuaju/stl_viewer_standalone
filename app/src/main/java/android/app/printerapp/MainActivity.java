@@ -3,11 +3,6 @@ package android.app.printerapp;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.printerapp.devices.DevicesFragment;
-import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.devices.discovery.InitialFragment;
-import android.app.printerapp.devices.printview.GcodeCache;
-import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.detail.DetailViewFragment;
@@ -44,7 +39,6 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity {
 
     //List of Fragments
-    private DevicesFragment mDevicesFragment; //Devices fragment @static for refresh
     private LibraryFragment mLibraryFragment; //Storage fragment
     private ViewerMainFragment mViewerFragment; //Print panel fragment @static for model load
 
@@ -86,7 +80,6 @@ public class MainActivity extends ActionBarActivity {
         mDialog = new DialogController(this);
 
         //Initialize fragments
-        mDevicesFragment = (DevicesFragment) getFragmentManager().findFragmentByTag(ListContent.ID_DEVICES);
         mLibraryFragment = (LibraryFragment) getFragmentManager().findFragmentByTag(ListContent.ID_LIBRARY);
         mViewerFragment = (ViewerMainFragment) getFragmentManager().findFragmentByTag(ListContent.ID_VIEWER);
 
@@ -110,9 +103,6 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
-
-        //Init gcode cache
-        new GcodeCache();
 
         //Set tab host for the view
         setTabHost();
@@ -223,14 +213,10 @@ public class MainActivity extends ActionBarActivity {
         spec.setContent(R.id.maintab3);
         mTabHost.addTab(spec);
 
-        if (DatabaseController.count() > 0){
-            mTabHost.setCurrentTab(0);
-            onItemSelected(0);
-        } else {
-            mTabHost.setCurrentTab(2);
-            onItemSelected(2);
 
-        }
+        mTabHost.setCurrentTab(2);
+        onItemSelected(2);
+
 
 
         mTabHost.getTabWidget().setDividerDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
@@ -306,7 +292,6 @@ public class MainActivity extends ActionBarActivity {
         switch (id) {
 
             case 0: {
-                closePrintView();
                 //Check if we already created the Fragment to avoid having multiple instances
                 if (getFragmentManager().findFragmentByTag(ListContent.ID_LIBRARY) == null) {
                     mLibraryFragment = new LibraryFragment();
@@ -317,7 +302,6 @@ public class MainActivity extends ActionBarActivity {
 
             break;
             case 1: {
-                closePrintView();
                 closeDetailView();
                 //Check if we already created the Fragment to avoid having multiple instances
                 if (getFragmentManager().findFragmentByTag(ListContent.ID_VIEWER) == null) {
@@ -328,22 +312,8 @@ public class MainActivity extends ActionBarActivity {
             }
             break;
             case 2: {
-                closeDetailView();
-                //Check if we already created the Fragment to avoid having multiple instances
-
-
-                if (getFragmentManager().findFragmentByTag(ListContent.ID_DEVICES) == null) {
-                    mDevicesFragment = new DevicesFragment();
-
-
-                    fragmentTransaction.add(R.id.maintab3, mDevicesFragment, ListContent.ID_DEVICES);
-                }
-
-                mCurrent = mDevicesFragment;
-
-                refreshDevicesCount();
+                //throw new IllegalAccessError("This functionailty is no longer available");
             }
-            break;
         }
 
         if (mViewerFragment != null) {
@@ -363,45 +333,6 @@ public class MainActivity extends ActionBarActivity {
             mDrawerToggle.setDrawerIndicatorEnabled(true);
         }
 
-
-    }
-
-    public static void refreshDevicesCount(){
-
-        mCurrent.setMenuVisibility(false);
-
-        Cursor c = DatabaseController.retrieveDeviceList();
-        if (c.getCount() == 0) {
-
-            mManager.popBackStack();
-            showExtraFragment(2, 0);
-
-        } else {
-
-             if (c.getCount() == 1) {
-
-                c.moveToFirst();
-
-                Log.i("Extra", "Opening " + c.getInt(0));
-
-                showExtraFragment(1, c.getInt(0));
-
-                 mDrawerToggle.setDrawerIndicatorEnabled(true);
-                 mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
-
-                } else {
-
-                 mCurrent.setMenuVisibility(true);
-                 mManager.popBackStack();
-                 closePrintView();
-                 closeInitialFragment();
-
-
-             }
-        }
-
-        DatabaseController.closeDb();
 
     }
 
@@ -426,26 +357,9 @@ public class MainActivity extends ActionBarActivity {
             case 0:
                 throw new IllegalAccessError("This functionailty is no longer available");
             case 1:
-
-                mCurrent.setMenuVisibility(false);
-                //New detailview with the printer name as extra
-                PrintViewFragment detailp = new PrintViewFragment();
-                Bundle argsp = new Bundle();
-                argsp.putLong("id", id);
-                detailp.setArguments(argsp);
-                mTransaction.replace(R.id.maintab3, detailp, ListContent.ID_PRINTVIEW).commit();
-
-                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                mDrawerToggle.setDrawerIndicatorEnabled(false);
-
-                break;
-
+                throw new IllegalAccessError("This functionailty is no longer available");
             case 2:
-
-                InitialFragment initial = new InitialFragment();
-                mTransaction.replace(R.id.maintab3, initial, ListContent.ID_INITIAL).commit();
-
-                break;
+                throw new IllegalAccessError("This functionailty is no longer available");
         }
 
 
@@ -458,60 +372,10 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    private void closeSettings(){
-        //Refresh printview fragment if exists
-        Fragment fragment = mManager.findFragmentByTag(ListContent.ID_SETTINGS);
-        if (fragment != null) refreshDevicesCount();
-    }
-
-    private static void closePrintView(){
-        //Refresh printview fragment if exists
-        Fragment fragment = mManager.findFragmentByTag(ListContent.ID_PRINTVIEW);
-        if (fragment != null) ((PrintViewFragment) fragment).stopCameraPlayback();
-
-        if (mCurrent!=null) mCurrent.setMenuVisibility(true);
-    }
-
     public static void closeDetailView(){
         //Refresh printview fragment if exists
         Fragment fragment = mManager.findFragmentByTag(ListContent.ID_DETAIL);
         if (fragment != null) ((DetailViewFragment) fragment).removeRightPanel();
-    }
-
-    /**
-     * Override to allow back navigation on the Storage fragment.
-     */
-    @Override
-    public void onBackPressed() {
-
-        //Update the actionbar to show the up carat/affordance
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-
-        if (mCurrent != null) {
-            Fragment fragment = mManager.findFragmentByTag(ListContent.ID_SETTINGS);
-            Cursor c = DatabaseController.retrieveDeviceList();
-
-            if ((fragment != null) || (c.getCount() > 1)){
-
-                closePrintView();
-
-                if (mManager.popBackStackImmediate()){
-
-                    mDrawerToggle.setDrawerIndicatorEnabled(true);
-                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
-                    //Basically refresh printer count if all were deleted in Settings mode
-                    if (mCurrent == mDevicesFragment)
-                        refreshDevicesCount();
-
-                }else super.onBackPressed();
-            } else super.onBackPressed();
-
-
-        } else {
-            super.onBackPressed();
-        }
     }
 
     //Show dialog
@@ -559,13 +423,7 @@ public class MainActivity extends ActionBarActivity {
 
             if (message!=null)
             if (message.equals("Devices")){
-
-                if (mDevicesFragment!=null) mDevicesFragment.notifyAdapter();
-
-                //Refresh printview fragment if exists
-                Fragment fragment = mManager.findFragmentByTag(ListContent.ID_PRINTVIEW);
-                if (fragment != null) ((PrintViewFragment) fragment).refreshData();
-
+                throw new IllegalAccessError("This functionailty is no longer available");
             } else if (message.equals("Profile")){
 
                 if (mViewerFragment!=null) {

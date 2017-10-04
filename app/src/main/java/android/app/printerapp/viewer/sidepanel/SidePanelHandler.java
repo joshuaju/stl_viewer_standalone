@@ -4,12 +4,8 @@ import android.app.Activity;
 import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.DevicesListController;
-import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
-import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.model.ModelProfile;
-import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.util.ui.CustomPopupWindow;
 import android.app.printerapp.util.ui.ViewHelper;
 import android.app.printerapp.viewer.SlicingHandler;
@@ -68,9 +64,6 @@ public class SidePanelHandler {
     private static final int DEFAULT_INFILL = 20;
     private int mCurrentInfill = DEFAULT_INFILL;
 
-    //Printer to send the files
-    private ModelPrinter mPrinter;
-
     //Inherited elements
     private SlicingHandler mSlicingHandler;
     private View mRootView;
@@ -92,7 +85,6 @@ public class SidePanelHandler {
     private PopupWindow mInfillOptionsPopupWindow;
     private TextView infillText;
 
-    public SidePanelPrinterAdapter printerAdapter;
     public SidePanelProfileAdapter profileAdapter;
 
     private EditText layerHeight;
@@ -119,7 +111,6 @@ public class SidePanelHandler {
         mActivity = activity;
         mSlicingHandler = handler;
         mRootView = v;
-        mPrinter = null;
 
         initUiElements();
         initSidePanel();
@@ -276,10 +267,6 @@ public class SidePanelHandler {
 
                             }
 
-
-                            mPrinter = DevicesListController.selectAvailablePrinter(i + 1, s_type.getSelectedItem().toString());
-                            mSlicingHandler.setPrinter(mPrinter);
-
                             ViewerMainFragment.slicingCallback();
 
 
@@ -393,9 +380,7 @@ public class SidePanelHandler {
                     printButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-
-                            refreshPrinters();
-                            sendToPrint();
+                            throw new IllegalAccessError("This functionailty is no longer available");
                         }
                     });
 
@@ -442,190 +427,11 @@ public class SidePanelHandler {
                     e.printStackTrace();
                 }
 
-
-                /**
-                 * Set preferred settings
-                 */
-                String prefType = DatabaseController.getPreference(DatabaseController.TAG_PROFILE, "type");
-                String prefQuality = DatabaseController.getPreference(DatabaseController.TAG_PROFILE, "quality");
-                //String prefPrinter = DatabaseController.getPreference(DatabaseController.TAG_PROFILE,"type");
-                if (prefType != null) s_type.setSelection(Integer.parseInt(prefType));
-                if (prefQuality != null) s_profile.setSelection(Integer.parseInt(prefQuality));
-                //if (prefPrinter!=null) s_printer.setSelection(Integer.parseInt(prefPrinter));
-
-                refreshPrinters();
-
             }
         });
 
 
     }
-
-    /**
-     * Send a gcode file to the selected printer
-     */
-    private void sendToPrint() {
-
-        if (mPrinter != null) {
-
-            //If printer is available
-            if (mPrinter.getStatus() == StateUtils.STATE_OPERATIONAL) {
-
-                //Retrieve the current file
-                File mFile = ViewerMainFragment.getFile();
-
-                if (mFile != null) {
-
-
-                    Log.i("Slicer", "Current file: " + mFile.getAbsolutePath());
-
-                    File actualFile = null;
-                    if (mSlicingHandler.getOriginalProject() != null)
-                        actualFile = new File(mSlicingHandler.getOriginalProject());
-
-                    File finalFile = null;
-
-                    Log.i("Slicer", "Current project: " + mSlicingHandler.getOriginalProject());
-
-                    if (actualFile != null)
-                        if (LibraryController.isProject(actualFile)) {
-
-                            //It's the last file
-                            if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last") != null) {
-
-                            /*mSlicingHandler.setExtras("print",true);
-                            mPrinter.setJobPath(mSlicingHandler.getLastReference());
-                           /mPrinter.setLoaded(false);
-                            ItemListFragment.performClick(0);
-                            ItemListActivity.showExtraFragment(1, mPrinter.getId());*/
-
-                                //Add it to the reference list
-                                DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES, mPrinter.getName(),
-                                        mSlicingHandler.getOriginalProject() + "/_tmp/temp.gco", true);
-
-                                mPrinter.setJobPath(null);
-
-                                DevicesListController.selectPrinter(mActivity, actualFile, mSlicingHandler);
-
-
-                            } else {
-
-                                //Check for temporary gcode
-                                File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
-
-
-                                //If we have a gcode which is temporary it's either a stl or sliced gcode
-                                if (tempFile.exists()) {
-
-                                    //Get original project
-                                    //final File actualFile = new File(mSlicingHandler.getOriginalProject());
-
-                                    //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
-
-                                    File tempFolder =new File(mSlicingHandler.getOriginalProject() + "/_tmp/");
-                                    if (!tempFolder.exists()){
-                                        if (tempFolder.mkdir()){
-
-                                            Log.i("Slicer", "Creating temp " + tempFolder.getAbsolutePath());
-
-                                        }
-                                        Log.i("Slicer", "Creating temp NOPE " + tempFolder.getAbsolutePath());
-                                    }
-
-                                    finalFile = new File(tempFolder + "/" + actualFile.getName().replace(" ", "_") + "_tmp.gcode");
-
-
-
-                                    Log.i("Slicer", "Creating new file in " + finalFile.getAbsolutePath());
-
-                                    Log.i("Slicer", "Final file is: STL or Sliced STL");
-
-
-                                    tempFile.renameTo(finalFile);
-
-                                    //if we don't have a temporary gcode, means we are currently watching an original gcode from a project
-                                } else {
-
-                                    if (LibraryController.hasExtension(1, mFile.getName())) {
-
-
-                                        Log.i("Slicer", "Final file is: Project GCODE");
-
-                                        finalFile = mFile;
-
-                                    } else {
-
-                                        Log.i("Slicer", "Mada mada");
-
-                                    }
-
-                                }
-
-                            }
-
-
-                            //Not a project
-                        } else {
-
-                            //Check for temporary gcode
-                            File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
-
-
-                            //If we have a gcode which is temporary it's a sliced gcode
-                            if (tempFile.exists()) {
-
-                                Log.i("Slicer", "Final file is: Random STL or Random Sliced STL");
-                                finalFile = tempFile;
-
-
-                                //It's a random gcode
-                            } else {
-
-                                Log.i("Slicer", "Final file is: Random GCODE");
-                                finalFile = mFile;
-                            }
-
-
-                        }
-
-
-                    if (finalFile != null)
-
-                        //either case if the file exists, we send it to the printer
-                        if (finalFile.exists()) {
-
-                            DevicesListController.selectPrinter(mActivity, finalFile, null);
-                            mPrinter.setJobPath(finalFile.getAbsolutePath());
-
-                        } else {
-
-                            Toast.makeText(mActivity, R.string.viewer_slice_error, Toast.LENGTH_LONG).show();
-
-                        }
-
-
-                } else {
-                    Toast.makeText(mActivity, R.string.devices_toast_no_gcode, Toast.LENGTH_LONG).show();
-                }
-                ;
-
-            } else
-                Toast.makeText(mActivity, R.string.viewer_printer_unavailable, Toast.LENGTH_LONG).show();
-
-
-        } else
-            Toast.makeText(mActivity, R.string.viewer_printer_unavailable, Toast.LENGTH_LONG).show();
-
-
-        /**
-         * Save the printer profile settings
-         */
-        DatabaseController.handlePreference(DatabaseController.TAG_PROFILE, "type", String.valueOf(s_type.getSelectedItemPosition()), true);
-        DatabaseController.handlePreference(DatabaseController.TAG_PROFILE, "quality", String.valueOf(s_profile.getSelectedItemPosition()), true);
-
-
-    }
-
 
     /**
      * Parses a JSON profile to the side panel
@@ -925,15 +731,8 @@ public class SidePanelHandler {
      ******************************************/
 
     public void switchSlicingButton(boolean enable){
-
-        if (mPrinter!=null) {
-            sliceButton.setClickable(enable);
-            sliceButton.refreshTextColor(enable);
-        } else {
-            sliceButton.setClickable(false);
-            sliceButton.refreshTextColor(false);
-        }
-
+        sliceButton.setClickable(false);
+        sliceButton.refreshTextColor(false);
     }
 
     public void reloadProfileAdapter(){
@@ -1004,50 +803,6 @@ public class SidePanelHandler {
 
 
         }
-
-    }
-
-
-    public void refreshPrinters(){
-
-        CardView advanced_layout = (CardView) mRootView.findViewById(R.id.advanced_options_card_view);
-        LinearLayout simple_layout = (LinearLayout) mRootView.findViewById(R.id.simple_settings_layout);
-        LinearLayout buttons_layout = (LinearLayout) mRootView.findViewById(R.id.advanced_settings_buttons_container);
-        LinearLayout print_button = (LinearLayout) mRootView.findViewById(R.id.print_button_container);
-
-        if (DatabaseController.count() < 1){
-            mRootView.findViewById(R.id.viewer_select_printer_layout).setVisibility(View.GONE);
-            mRootView.findViewById(R.id.viewer_no_printer_layout).setVisibility(View.VISIBLE);
-
-
-            ViewHelper.disableEnableAllViews(false,advanced_layout);
-            ViewHelper.disableEnableAllViews(false,simple_layout);
-            ViewHelper.disableEnableAllViews(false,buttons_layout);
-            ViewHelper.disableEnableAllViews(false,print_button);
-
-
-        } else {
-            mRootView.findViewById(R.id.viewer_select_printer_layout).setVisibility(View.VISIBLE);
-            mRootView.findViewById(R.id.viewer_no_printer_layout).setVisibility(View.GONE);
-
-            ViewHelper.disableEnableAllViews(true,advanced_layout);
-            ViewHelper.disableEnableAllViews(true,simple_layout);
-            ViewHelper.disableEnableAllViews(true,buttons_layout);
-            ViewHelper.disableEnableAllViews(true,print_button);
-            mPrinter = DevicesListController.selectAvailablePrinter(s_type.getSelectedItemPosition() + 1, s_type.getSelectedItem().toString());
-            mSlicingHandler.setPrinter(mPrinter);
-            if (mPrinter!=null)   ViewHelper.disableEnableAllViews(true,print_button);
-            else ViewHelper.disableEnableAllViews(false,print_button);
-        }
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
-        if (sharedPref.getBoolean(mActivity.getResources().getString(R.string.shared_preferences_autoslice), false)) sliceButton.setVisibility(View.INVISIBLE);
-        else sliceButton.setVisibility(View.VISIBLE);
-
-        mRootView.invalidate();
-
-
-
 
     }
 
