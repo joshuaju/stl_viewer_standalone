@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
+import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.viewer.FileBrowser;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -135,12 +137,15 @@ public class LibraryFragment extends Fragment {
                 });
             }
 
-
-
-
-            mListClickListener = new LibraryOnClickListener(this, mListView);
             mListView.setSelector(getResources().getDrawable(R.drawable.list_selector));
-            mListView.setOnItemClickListener(mListClickListener);
+            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    ModelFile mFile = (ModelFile) LibraryController.getFileList().get(i);
+                    File file = new File(mFile.getStl());
+                    MainActivity.requestOpenFile(file.getAbsolutePath());
+                }
+            });
             mListView.setOnItemLongClickListener(mListClickListener);
             mListView.setDivider(null);
             mListView.setAdapter(mListAdapter);

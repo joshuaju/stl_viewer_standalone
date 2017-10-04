@@ -136,17 +136,6 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
         }
 
         ImageButton overflowButton = (ImageButton) v.findViewById(R.id.model_settings_imagebutton);
-        if (overflowButton != null) {
-            overflowButton.setColorFilter(getContext().getResources().getColor(R.color.body_text_3),
-                    PorterDuff.Mode.MULTIPLY);
-            overflowButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LibraryOnClickListener onClickListener = new LibraryOnClickListener(mContext, null);
-                    onClickListener.onOverflowButtonClick(v, position);
-                }
-            });
-        }
 
 
         //Hide overflow button in printer tab

@@ -71,7 +71,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/selectable_rect_background_gray"
             android:padding="@dimen/content_padding_small"
-            android:src="@drawable/ic_more_vert" />
+            android:src="@drawable/ic_more_vert"
+            android:visibility="gone" />
 
     </LinearLayout>
 
