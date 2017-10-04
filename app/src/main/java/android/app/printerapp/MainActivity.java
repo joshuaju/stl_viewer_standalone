@@ -13,7 +13,6 @@ import android.app.printerapp.history.SwipeDismissListViewTouchListener;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.detail.DetailViewFragment;
-import android.app.printerapp.settings.SettingsFragment;
 import android.app.printerapp.util.ui.AnimationHelper;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.BroadcastReceiver;
@@ -441,7 +440,7 @@ public class MainActivity extends ActionBarActivity {
 
         //New transaction
         FragmentTransaction mTransaction = mManager.beginTransaction();
-        mTransaction.setCustomAnimations(0, 0 , 0, R.anim.fragment_slide_out_left);
+        //mTransaction.setCustomAnimations(0, 0 , 0, R.anim.fragment_slide_out_left);
 
         //Add current fragment to the backstack and hide it (will show again later)
         mTransaction.addToBackStack(mCurrent.getTag());
@@ -450,17 +449,7 @@ public class MainActivity extends ActionBarActivity {
         switch (type) {
 
             case 0:
-
-                closePrintView();
-                mManager.popBackStack();
-                SettingsFragment settings = new SettingsFragment();
-                mTransaction.replace(R.id.container_layout, settings, ListContent.ID_SETTINGS).commit();
-
-                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                mDrawerToggle.setDrawerIndicatorEnabled(false);
-
-                break;
-
+                throw new IllegalAccessError("This functionailty is no longer available");
             case 1:
 
                 mCurrent.setMenuVisibility(false);

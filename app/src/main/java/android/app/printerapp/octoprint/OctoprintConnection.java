@@ -12,7 +12,6 @@ import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.model.ModelProfile;
-import android.app.printerapp.settings.EditPrinterDialog;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
 import android.content.Intent;
@@ -255,8 +254,7 @@ public class OctoprintConnection {
                                 ||(current.getString("state").contains("Error"))
                                  || (current.getString("printerProfile").equals(DEFAULT_PROFILE))) {
 
-                            //configure new printer
-                            new EditPrinterDialog(context, p, response);
+                            throw new IllegalAccessError("This functionailty is no longer available");
 
                         } else {
 
