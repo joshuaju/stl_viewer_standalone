@@ -427,7 +427,6 @@ public class MainActivity extends ActionBarActivity {
             } else if (message.equals("Profile")){
 
                 if (mViewerFragment!=null) {
-                    mViewerFragment.notifyAdapter();
                 }
 
             } else if (message.equals("Files")){

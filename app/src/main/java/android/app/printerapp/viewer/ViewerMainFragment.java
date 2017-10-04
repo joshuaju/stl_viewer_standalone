@@ -12,7 +12,6 @@ import android.app.printerapp.model.ModelProfile;
 import android.app.printerapp.util.ui.CustomEditableSlider;
 import android.app.printerapp.util.ui.CustomPopupWindow;
 import android.app.printerapp.util.ui.ListIconPopupWindowAdapter;
-import android.app.printerapp.viewer.sidepanel.SidePanelHandler;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -127,7 +126,6 @@ public class ViewerMainFragment extends Fragment {
     private static Context mContext;
     private static View mRootView;
 
-    private static LinearLayout mStatusBottomBar;
     private static FrameLayout mBottomBar;
     private static LinearLayout mRotationLayout;
     private static LinearLayout mScaleLayout;
@@ -147,7 +145,6 @@ public class ViewerMainFragment extends Fragment {
      * ****************************************************************************
      */
     private static SlicingHandler mSlicingHandler;
-    private static SidePanelHandler mSidePanelHandler;
 
     private static int mCurrentType = WitboxFaces.TYPE_WITBOX;
     ;
@@ -202,7 +199,6 @@ public class ViewerMainFragment extends Fragment {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
             //Init slicing elements
-            mSidePanelHandler = new SidePanelHandler(mSlicingHandler, getActivity(), mRootView);
             mCurrentType = WitboxFaces.TYPE_WITBOX;
             mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG, WitboxFaces.WITBOX_WITDH, WitboxFaces.WITBOX_HEIGHT};
 
@@ -281,14 +277,6 @@ public class ViewerMainFragment extends Fragment {
 
     private void initUIElements() {
 
-        //Set behavior of the expandable panel
-        final FrameLayout expandablePanel = (FrameLayout) mRootView.findViewById(R.id.advanced_options_expandable_panel);
-        expandablePanel.post(new Runnable() { //Get the initial height of the panel after onCreate is executed
-            @Override
-            public void run() {
-                mSettingsPanelMinHeight = expandablePanel.getMeasuredHeight();
-            }
-        });
         /*final CheckBox expandPanelButton = (CheckBox) mRootView.findViewById(R.id.expand_button_checkbox);
         expandPanelButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -423,7 +411,6 @@ public class ViewerMainFragment extends Fragment {
             }
         });
 
-        mStatusBottomBar = (LinearLayout) mRootView.findViewById(R.id.model_status_bottom_bar);
         mRotationLayout = (LinearLayout) mRootView.findViewById(R.id.model_button_rotate_bar_linearlayout);
         mScaleLayout  = (LinearLayout) mRootView.findViewById(R.id.model_button_scale_bar_linearlayout);
 
@@ -453,8 +440,6 @@ public class ViewerMainFragment extends Fragment {
         mScaleEditX.addTextChangedListener(mTextWatcherX);
         mScaleEditY.addTextChangedListener(mTextWatcherY);
         mScaleEditZ.addTextChangedListener(mTextWatcherZ);
-
-        mStatusBottomBar.setVisibility(View.VISIBLE);
         mBottomBar = (FrameLayout) mRootView.findViewById(R.id.bottom_bar);
         mBottomBar.setVisibility(View.INVISIBLE);
         mCurrentAxis = -1;
@@ -675,7 +660,6 @@ public class ViewerMainFragment extends Fragment {
             mVisibilityModeButton.setVisibility(View.VISIBLE);
             mFile = new File(filePath);
             StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
-            mSidePanelHandler.enableProfileSelection(true);
             mCurrentViewMode = NORMAL;
 
         } else if (LibraryController.hasExtension(1, filePath)) {
@@ -687,7 +671,6 @@ public class ViewerMainFragment extends Fragment {
             }
             mFile = new File(filePath);
             GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
-            mSidePanelHandler.enableProfileSelection(false);
             mCurrentViewMode = LAYER;
 
         }
@@ -1073,7 +1056,6 @@ public class ViewerMainFragment extends Fragment {
             mSurface.exitEditionMode();
             mRotationLayout.setVisibility(View.GONE);
             mScaleLayout.setVisibility(View.GONE);
-            mStatusBottomBar.setVisibility(View.VISIBLE);
             mBottomBar.setVisibility(View.INVISIBLE);
             mActionModePopupWindow = null;
             mSurface.setRendererAxis(-1);
@@ -1114,7 +1096,6 @@ public class ViewerMainFragment extends Fragment {
      */
     public static void onActionItemSelected(final ImageButton item) {
 
-        mStatusBottomBar.setVisibility(View.VISIBLE);
         mSurface.setRendererAxis(-1);
         mRotationLayout.setVisibility(View.GONE);
         mScaleLayout.setVisibility(View.GONE);
@@ -1380,39 +1361,11 @@ public class ViewerMainFragment extends Fragment {
 
 
         if (mRootView!=null){
-
-
-            ProgressBar pb = (ProgressBar) mRootView.findViewById(R.id.progress_slice);
-            TextView tv = (TextView) mRootView.findViewById(R.id.viewer_text_progress_slice);
-            TextView tve = (TextView) mRootView.findViewById(R.id.viewer_text_estimated_time);
-            TextView tve_title = (TextView) mRootView.findViewById(R.id.viewer_estimated_time_textview);
-
             if ( mSlicingHandler.getLastReference()!= null) {
-
-                tve_title.setVisibility(View.VISIBLE);
-                pb.setVisibility(View.VISIBLE);
-
-                switch (status) {
-                    default:
-
-                        break;
-                }
-
             }else {
-
-                pb.setVisibility(View.INVISIBLE);
-                tve_title.setVisibility(View.INVISIBLE);
-                tv.setText(null);
-                tve.setText(null);
                 mRootView.invalidate();
-
-
-
             }
         }
-
-
-
     }
 
     /**
@@ -1479,25 +1432,6 @@ public class ViewerMainFragment extends Fragment {
         }
     };
 
-    /**
-     * Notify the side panel adapters, check for null if they're not available yet (rare case)
-     */
-    public void notifyAdapter() {
-
-        try {
-            if (mSidePanelHandler.profileAdapter != null)
-                mSidePanelHandler.profileAdapter.notifyDataSetChanged();
-
-            mSidePanelHandler.reloadProfileAdapter();
-
-        } catch (NullPointerException e) {
-
-            e.printStackTrace();
-        }
-
-
-    }
-
     //Refresh printers when the fragmetn is shown
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -1513,7 +1447,7 @@ public class ViewerMainFragment extends Fragment {
             SliceTask task = new SliceTask();
             task.execute();
         } else {
-            mSidePanelHandler.switchSlicingButton(true);
+           // mSidePanelHandler.switchSlicingButton(true);
         }
 
 
@@ -1677,7 +1611,7 @@ public class ViewerMainFragment extends Fragment {
         if (mScaleLayout.getVisibility() == View.VISIBLE){
             switch (axis){
 
-                case 0: mScaleEditX.setError(mContext.getResources().getString(R.string.viewer_error_bigger_plate,mCurrentPlate[0] * 2));
+                case 0: mScaleEditX.setError(mContext.getResources().getString(R.string.viewer_error_bigger_plate, mCurrentPlate[0] * 2));
                     break;
 
                 case 1: mScaleEditY.setError(mContext.getResources().getString(R.string.viewer_error_bigger_plate,mCurrentPlate[1] * 2));
