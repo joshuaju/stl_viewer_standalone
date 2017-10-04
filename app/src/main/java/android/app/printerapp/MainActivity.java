@@ -8,8 +8,6 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.InitialFragment;
 import android.app.printerapp.devices.printview.GcodeCache;
 import android.app.printerapp.devices.printview.PrintViewFragment;
-import android.app.printerapp.history.HistoryDrawerAdapter;
-import android.app.printerapp.history.SwipeDismissListViewTouchListener;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.detail.DetailViewFragment;
@@ -60,7 +58,6 @@ public class MainActivity extends ActionBarActivity {
     //Drawer
     private static DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private HistoryDrawerAdapter mDrawerAdapter;
     private static ActionBarDrawerToggle mDrawerToggle;
 
     @Override
@@ -158,7 +155,7 @@ public class MainActivity extends ActionBarActivity {
 
 
                 if (slideOffset == 1.0){
-                    mDrawerAdapter.notifyDataSetChanged();
+                    //mDrawerAdapter.notifyDataSetChanged();
                 }
                 super.onDrawerSlide(drawerView, slideOffset);
             }
@@ -178,9 +175,7 @@ public class MainActivity extends ActionBarActivity {
 
         LayoutInflater inflater = getLayoutInflater();
         mDrawerList.addHeaderView(inflater.inflate(R.layout.history_drawer_header, null));
-        mDrawerAdapter = new HistoryDrawerAdapter(this, LibraryController.getHistoryList());
 
-        mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -190,26 +185,6 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
-
-        mDrawerList.setOnTouchListener(new SwipeDismissListViewTouchListener(mDrawerList, new SwipeDismissListViewTouchListener.DismissCallbacks() {
-
-            @Override
-            public boolean canDismiss(int position) {
-                return true;
-            }
-
-            public void onDismiss(ListView listView, int[] reverseSortedPositions) {
-                                         for (int position : reverseSortedPositions) {
-
-                                             Toast.makeText(MainActivity.this,getString(R.string.delete) + " " + LibraryController.getHistoryList().get(position - 1).model,Toast.LENGTH_SHORT).show();
-                                             DatabaseController.removeFromHistory(LibraryController.getHistoryList().get(position - 1).path);
-                                             mDrawerAdapter.removeItem(position - 1);
-
-
-                                             }
-                                     }
-                             }));
-
     }
 
     @Override
