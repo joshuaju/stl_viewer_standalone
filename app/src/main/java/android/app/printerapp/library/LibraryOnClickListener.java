@@ -181,7 +181,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
     private void showRightPanel(final int index) {
 
-        FragmentTransaction fragmentTransaction = mContext.getFragmentManager().beginTransaction();
+        /*FragmentTransaction fragmentTransaction = mContext.getFragmentManager().beginTransaction();
         //fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
 
         //New DetailView with the file as an index
@@ -191,6 +191,11 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
         detail.setArguments(args);
 
         fragmentTransaction.replace(R.id.right_panel_container, detail, ListContent.ID_DETAIL).commit();
+*/
+        ModelFile mFile = (ModelFile) LibraryController.getFileList().get(index);
+        File file = new File(mFile.getStl());
+        MainActivity.requestOpenFile(file.getAbsolutePath());
+
     }
 
     //Show dialog for handling files
