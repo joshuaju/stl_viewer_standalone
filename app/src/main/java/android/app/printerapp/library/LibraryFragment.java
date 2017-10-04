@@ -49,7 +49,6 @@ public class LibraryFragment extends Fragment {
     private static final int SORT_SIZE = 2;
 
     private LibraryAdapter mListAdapter;
-    private LibraryOnClickListener mListClickListener;
 
     private ListView mListView;
     private View mListHeader;
@@ -146,7 +145,6 @@ public class LibraryFragment extends Fragment {
                     MainActivity.requestOpenFile(file.getAbsolutePath());
                 }
             });
-            mListView.setOnItemLongClickListener(mListClickListener);
             mListView.setDivider(null);
             mListView.setAdapter(mListAdapter);
 
@@ -201,13 +199,6 @@ public class LibraryFragment extends Fragment {
 
         }
         return mRootView;
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-
-        if (mListClickListener!=null) mListClickListener.hideActionBar();
     }
 
     @Override
@@ -288,8 +279,6 @@ public class LibraryFragment extends Fragment {
             public void onClick(View v) {
 
                 selectNavItem(v.getId());
-
-                if (mListClickListener!=null) mListClickListener.hideActionBar();
 
                 LibraryController.setCurrentPath(LibraryController.getParentFolder() + "/Files");
 
