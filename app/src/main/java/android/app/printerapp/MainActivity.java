@@ -13,7 +13,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -31,7 +30,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by alberto-baeza on 1/21/15.
@@ -214,8 +212,8 @@ public class MainActivity extends ActionBarActivity {
         mTabHost.addTab(spec);
 
 
-        mTabHost.setCurrentTab(2);
-        onItemSelected(2);
+        mTabHost.setCurrentTab(0);
+        onItemSelected(0);
 
 
 
@@ -311,9 +309,6 @@ public class MainActivity extends ActionBarActivity {
                 mCurrent = mViewerFragment;
             }
             break;
-            case 2: {
-                //throw new IllegalAccessError("This functionailty is no longer available");
-            }
         }
 
         if (mViewerFragment != null) {

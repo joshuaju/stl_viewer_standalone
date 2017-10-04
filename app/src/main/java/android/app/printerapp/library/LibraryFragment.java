@@ -173,8 +173,6 @@ public class LibraryFragment extends Fragment {
             //Set left navigation menu behavior
             ((TextView) mRootView.findViewById(R.id.library_nav_all_models)).setOnClickListener(getOnNavTextViewClickListener());
             ((TextView) mRootView.findViewById(R.id.library_nav_local_models)).setOnClickListener(getOnNavTextViewClickListener());
-            ((TextView) mRootView.findViewById(R.id.library_nav_printer_models)).setOnClickListener(getOnNavTextViewClickListener());
-            ((TextView) mRootView.findViewById(R.id.library_nav_fav_models)).setOnClickListener(getOnNavTextViewClickListener());
 
 
             //Close detailview when clicking outside
@@ -296,12 +294,6 @@ public class LibraryFragment extends Fragment {
                         break;
                     case R.id.library_nav_local_models:
                         mCurrentTab = LibraryController.TAB_CURRENT;
-                        break;
-                    case R.id.library_nav_printer_models:
-                        mCurrentTab = LibraryController.TAB_PRINTER;
-                        break;
-                    case R.id.library_nav_fav_models:
-                        mCurrentTab = LibraryController.TAB_FAVORITES;
                         break;
                     default:
                         break;

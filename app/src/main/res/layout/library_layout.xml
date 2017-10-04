@@ -32,16 +32,6 @@
                 style="@style/NavigationMenuItem"
                 android:text="@string/library_models_local" />
 
-            <TextView
-                android:id="@+id/library_nav_printer_models"
-                style="@style/NavigationMenuItem"
-                android:text="@string/library_models_printers" />
-
-            <TextView
-                android:id="@+id/library_nav_fav_models"
-                style="@style/NavigationMenuItem"
-                android:text="@string/library_models_favorites" />
-
         </LinearLayout>
 
         <LinearLayout
