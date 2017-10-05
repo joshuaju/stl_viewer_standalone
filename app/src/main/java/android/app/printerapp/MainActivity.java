@@ -206,10 +206,11 @@ public class MainActivity extends ActionBarActivity {
         mTabHost.addTab(spec);
 
         //Print view tab
+        // TODO EXTRACT Removing the 3 lines below will result in blank tabs. Why?
         spec = mTabHost.newTabSpec("Printer");
         spec.setIndicator(getTabIndicator(getResources().getString(R.string.fragment_devices)));
         spec.setContent(R.id.maintab3);
-        mTabHost.addTab(spec);
+        //mTabHost.addTab(spec);
 
 
         mTabHost.setCurrentTab(0);
