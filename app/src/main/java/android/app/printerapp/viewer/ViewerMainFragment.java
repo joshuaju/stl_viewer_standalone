@@ -151,6 +151,8 @@ public class ViewerMainFragment extends Fragment {
     private static int[] mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG, WitboxFaces.WITBOX_WITDH, WitboxFaces.WITBOX_HEIGHT};
     ;
 
+    /** That layout contains the coordinates at the top left corner of the stl viewer
+     */
     private static LinearLayout mSizeText;
     private static int mCurrentAxis;
 
@@ -1005,7 +1007,7 @@ public class ViewerMainFragment extends Fragment {
 
         hideCurrentActionPopUpWindow();
 
-        mSizeText.setVisibility(View.VISIBLE);
+        mSizeText.setVisibility(View.GONE);
 
         if (mActionModePopupWindow == null) {
 
@@ -1042,8 +1044,7 @@ public class ViewerMainFragment extends Fragment {
             mActionModePopupWindow = (new CustomPopupWindow(popupLayout, popupLayoutWidth,
                     popupLayoutHeight, R.style.SlideRightAnimation).getPopupWindow());
 
-            mActionModePopupWindow.showAtLocation(mSurface, Gravity.NO_GRAVITY,
-                    popupLayoutX, popupLayoutY);
+            // TODO Hide popup when model is selected: mActionModePopupWindow.showAtLocation(mSurface, Gravity.NO_GRAVITY, popupLayoutX, popupLayoutY);
 
         }
     }
