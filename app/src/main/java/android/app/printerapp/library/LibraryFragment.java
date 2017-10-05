@@ -155,7 +155,6 @@ public class LibraryFragment extends Fragment {
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     //Logic to go back on the library navigation
 //                    if(!LibraryController.getCurrentPath().getParent().equals(LibraryController.getParentFolder().getAbsolutePath())) {
 //                        hideListHeader();
@@ -359,22 +358,6 @@ public class LibraryFragment extends Fragment {
 
         adb.setNegativeButton(R.string.cancel, null);
         adb.show();
-
-//        boolean wrapInScrollView = true;
-//        new MaterialDialog.Builder(getActivity())
-//                .title(R.string.library_search_dialog_title)
-//                .customView(et, wrapInScrollView)
-//                .positiveText(R.string.search)
-//                .callback(new MaterialDialog.ButtonCallback() {
-//                    @Override
-//                    public void onPositive(MaterialDialog dialog) {
-//                        mCurrentFilter = et.getText().toString();
-//                    }
-//                })
-//                .negativeText(R.string.cancel)
-//                .build()
-//                .show();
-
     }
 
     //Search for models in filesystem

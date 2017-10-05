@@ -675,6 +675,7 @@ public class ViewerMainFragment extends Fragment {
 
         }
 
+        mDataList.clear();
         mDataList.add(data);
 
 
