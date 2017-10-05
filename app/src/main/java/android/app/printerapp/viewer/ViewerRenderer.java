@@ -663,7 +663,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
 
 		
-		if (mMode == ViewerMainFragment.DO_SNAPSHOT || mMode == ViewerMainFragment.PRINT_PREVIEW) mInfinitePlane = new WitboxPlate (mContext, true, ViewerMainFragment.getCurrentPlate());
+		if (mMode == ViewerMainFragment.DO_SNAPSHOT || mMode == ViewerMainFragment.PRINT_PREVIEW)
+			mInfinitePlane = new WitboxPlate (mContext, true, ViewerMainFragment.getCurrentPlate());
 
         mWitboxFaceBack = new WitboxFaces (BACK, mPlate);
         mWitboxFaceRight = new WitboxFaces (RIGHT, mPlate);
@@ -935,18 +936,19 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         if (mMode == ViewerMainFragment.DO_SNAPSHOT) {
         	mInfinitePlane.draw(mMVPMatrix, mMVMatrix);
         	takeSnapshot(unused);
-
-
-
         } else {
+			// TODO Extract Don't draw a box, just draw a plane
+			mInfinitePlane = new WitboxPlate (mContext, true, ViewerMainFragment.getCurrentPlate());
+			mInfinitePlane.draw(mMVPMatrix, mMVMatrix);
 
+        	/*
         	if (mShowDownWitboxFace) mWitboxFaceDown.draw(mMVPMatrix, mMVMatrix);
         	if (mShowBackWitboxFace) mWitboxFaceBack.draw(mMVPMatrix);
         	if (mShowRightWitboxFace) mWitboxFaceRight.draw(mMVPMatrix);
         	if (mShowLeftWitboxFace) mWitboxFaceLeft.draw(mMVPMatrix);
             if (mShowFrontWitboxFace) mWitboxFaceFront.draw(mMVPMatrix);
             if (mShowTopWitboxFace) mWitboxFaceTop.draw(mMVPMatrix);
-
+			*/
         } 
 	}
 	
