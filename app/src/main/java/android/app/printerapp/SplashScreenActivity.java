@@ -45,7 +45,9 @@ public class SplashScreenActivity extends Activity {
 
             //Simulate a long loading process on application startup
             Timer timer = new Timer();
-            timer.schedule(splashDelay, SPLASH_SCREEN_DELAY);
+            //timer.schedule(splashDelay, SPLASH_SCREEN_DELAY);
+            // TODO EXTRACT Set splash sc
+            timer.schedule(splashDelay, 0);
 
         }else finish();
 
