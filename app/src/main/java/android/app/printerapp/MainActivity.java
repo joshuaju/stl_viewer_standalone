@@ -1,5 +1,6 @@
 package android.app.printerapp;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -34,7 +35,7 @@ import android.widget.TextView;
 /**
  * Created by alberto-baeza on 1/21/15.
  */
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     //List of Fragments
     private LibraryFragment mLibraryFragment; //Storage fragment
@@ -70,8 +71,8 @@ public class MainActivity extends ActionBarActivity {
 
         mTabHost = (TabHost) findViewById(R.id.tabHost);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeButtonEnabled(true);
 
         //Initialize variables
         mManager = getFragmentManager();
