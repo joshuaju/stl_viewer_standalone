@@ -659,7 +659,7 @@ public class ViewerMainFragment extends Fragment {
 
             data = new DataStorage();
 
-            mVisibilityModeButton.setVisibility(View.VISIBLE);
+            mVisibilityModeButton.setVisibility(View.GONE); // TODO EXTRACT Hide the "eye" button
             mFile = new File(filePath);
             StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
             mCurrentViewMode = NORMAL;

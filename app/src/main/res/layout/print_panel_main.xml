@@ -209,7 +209,8 @@
                         android:layout_margin="@dimen/content_margin_small"
                         android:background="@drawable/action_button_selector_dark"
                         android:padding="@dimen/content_padding_small"
-                        android:src="@drawable/ic_viewer_visibility" />
+                        android:src="@drawable/ic_viewer_visibility"
+                        android:visibility="gone" />
 
 
 
