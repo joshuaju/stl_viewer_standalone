@@ -78,4 +78,5 @@ dependencies {
     compile 'com.rengwuxian.materialedittext:library:1.8.2'
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
     compile files('libs/android-async-http-1.4.6.jar')
+    compile files('libs/commons-io-2.6.jar')
 }
