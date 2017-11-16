@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
+import android.app.printerapp.SplashScreenActivity;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.viewer.FileBrowser;
 import android.content.Context;
@@ -198,6 +199,13 @@ public class LibraryFragment extends Fragment {
 
         }
         return mRootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
+
+
     }
 
     @Override

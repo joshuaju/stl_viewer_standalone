@@ -60,6 +60,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.devsmart.android.ui.HorizontalListView;
 
+import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -70,6 +71,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -86,6 +89,8 @@ public class ViewerMainFragment extends Fragment {
     private static final int LAYER = 4;
 
     private static int mCurrentViewMode = 0;
+
+    public static String downloadableFilePath;
 
     //Constants
     public static final int DO_SNAPSHOT = 0;
@@ -172,6 +177,14 @@ public class ViewerMainFragment extends Fragment {
         mSlicingHandler = new SlicingHandler(getActivity());
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        Log.d("LISTENHERE", downloadableFilePath);
+        Log.d("LISTENHERE", "poopidoop");
+        openFile(downloadableFilePath);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -247,6 +260,7 @@ public class ViewerMainFragment extends Fragment {
                 }
             });
         }
+
 
         return mRootView;
 
@@ -655,27 +669,29 @@ public class ViewerMainFragment extends Fragment {
     public static void openFile(String filePath) {
         DataStorage data = null;
         //Open the file
-        if (LibraryController.hasExtension(0, filePath)) {
-
             data = new DataStorage();
 
             mVisibilityModeButton.setVisibility(View.GONE); // TODO EXTRACT Hide the "eye" button
-            mFile = new File(filePath);
+
+            File tempFile = new File(mContext.getFilesDir()+"tempSTL.stl");
+
+            try{
+                tempFile.createNewFile();
+                FileUtils.copyURLToFile(new URL(downloadableFilePath), tempFile);
+                mFile = tempFile;
+            }
+            catch(MalformedURLException ex1){
+                Log.d("ERROR1", ex1.toString());
+            } catch (IOException name) {
+                Log.d("ERROR", name.toString());
+            }
+
+
             StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
+
             mCurrentViewMode = NORMAL;
 
-        } else if (LibraryController.hasExtension(1, filePath)) {
 
-            data = new DataStorage();
-            if (!filePath.contains("/temp")) {
-                mVisibilityModeButton.setVisibility(View.GONE);
-                optionClean();
-            }
-            mFile = new File(filePath);
-            GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
-            mCurrentViewMode = LAYER;
-
-        }
 
         mDataList.clear();
         mDataList.add(data);
@@ -748,6 +764,7 @@ public class ViewerMainFragment extends Fragment {
         String pathStl;
 
         if (mSlicingHandler.getLastReference() != null) {
+
 
             pathStl = mSlicingHandler.getLastReference();
             openFile(pathStl);

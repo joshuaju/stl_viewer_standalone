@@ -172,6 +172,7 @@ public class MainActivity extends Activity {
                 mDrawerLayout.closeDrawers();
                 requestOpenFile(LibraryController.getHistoryList().get(i - 1).path);
 
+
             }
         });
     }
@@ -194,14 +195,10 @@ public class MainActivity extends Activity {
 
         mTabHost.setup();
 
-        //Models tab
-        TabHost.TabSpec spec = mTabHost.newTabSpec("Library");
-        spec.setIndicator(getTabIndicator(getResources().getString(R.string.fragment_models)));
-        spec.setContent(R.id.maintab1);
-        mTabHost.addTab(spec);
+
 
         //Print panel tab
-        spec = mTabHost.newTabSpec("Panel");
+        TabHost.TabSpec spec = mTabHost.newTabSpec("Panel");
         spec.setIndicator(getTabIndicator(getResources().getString(R.string.fragment_print)));
         spec.setContent(R.id.maintab2);
         mTabHost.addTab(spec);
@@ -214,8 +211,8 @@ public class MainActivity extends Activity {
         //mTabHost.addTab(spec);
 
 
-        mTabHost.setCurrentTab(0);
-        onItemSelected(0);
+        mTabHost.setCurrentTab(1);
+        onItemSelected(1);
 
 
 

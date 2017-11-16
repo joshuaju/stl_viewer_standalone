@@ -1,5 +1,6 @@
 package android.app.printerapp;
 
+import android.app.printerapp.viewer.ViewerMainFragment;
 import android.widget.Toast;
 import android.app.Activity;
 import android.app.printerapp.library.LibraryController;
@@ -28,6 +29,7 @@ public class SplashScreenActivity extends Activity {
 
     //Set the duration of the splash screen
     private static final long SPLASH_SCREEN_DELAY = 3000;
+    public static SplashScreenActivity mSplashScreenActivity;
 
     Context mContext;
 
@@ -37,6 +39,7 @@ public class SplashScreenActivity extends Activity {
         super.onCreate(savedInstanceState);
 
 
+        mSplashScreenActivity = this;
 
         setContentView(R.layout.activity_splash_screen);
 
@@ -61,18 +64,19 @@ public class SplashScreenActivity extends Activity {
             {
                 String stringVariable = strl;
                 //
-                // FileUtils.copyURLToFile("https://drive.google.com/uc?export=download&id=1UR-ldLTkg4B5ZW5vRY2saZ5M3yEj97F6", new File());
+                //FileUtils.copyURLToFile("https://drive.google.com/uc?export=download&id=1UR-ldLTkg4B5ZW5vRY2saZ5M3yEj97F6", new File());
                 Log.d("STATE", strl);
 
+                ViewerMainFragment.downloadableFilePath = strl;
 
                 Log.d(TAG, "[START PRINTERAPP]");
                 Intent mainIntent = new Intent().setClass(
                         SplashScreenActivity.this, MainActivity.class);
                 startActivity(mainIntent);
 
+
                 //Close the activity so the user won't able to go back this
                 //activity pressing Back button
-                finish();
 
 
             }
