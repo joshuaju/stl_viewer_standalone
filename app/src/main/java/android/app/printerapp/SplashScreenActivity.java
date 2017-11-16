@@ -1,6 +1,7 @@
 package android.app.printerapp;
 
 import android.app.printerapp.viewer.ViewerMainFragment;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 import android.app.Activity;
 import android.app.printerapp.library.LibraryController;
@@ -54,6 +55,8 @@ public class SplashScreenActivity extends Activity {
 
 
         WebView myWebView = (WebView) findViewById(R.id.webview);
+        myWebView.setWebViewClient(new WebViewClient());
+        myWebView.clearCache(true);
         myWebView.getSettings().setJavaScriptEnabled(true);
 
 
@@ -74,9 +77,6 @@ public class SplashScreenActivity extends Activity {
                         SplashScreenActivity.this, MainActivity.class);
                 startActivity(mainIntent);
 
-
-                //Close the activity so the user won't able to go back this
-                //activity pressing Back button
 
 
             }
