@@ -82,6 +82,7 @@ public class SplashScreenActivity extends Activity {
             }
         }, "webView");
 
+        //IP to connect to
         myWebView.loadUrl("http://192.168.1.57:8888/");
 
         if (isTaskRoot()){
