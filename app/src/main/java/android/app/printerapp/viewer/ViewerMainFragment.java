@@ -182,7 +182,6 @@ public class ViewerMainFragment extends Fragment {
         super.onResume();
 
         Log.d("LISTENHERE", downloadableFilePath);
-        Log.d("LISTENHERE", "poopidoop");
         openFile(downloadableFilePath);
     }
 
